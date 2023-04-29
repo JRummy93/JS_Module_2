@@ -1,0 +1,44 @@
+#menu {
+ display: flex;
+ flex-wrap: wrap;
+ justify-content: space-around;
+ align-items: center;
+ 
+}
+
+.line-through {
+    text-decoration: line-through;
+}
+
+.card {
+    border: 1px solid blue;
+    border-radius: 1em;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    padding: 1em;
+    margin: 2em;
+    width: 20em;
+}
+
+.itemImages {
+    border: 1px solid blue;
+    margin: 1em;
+    width: 7em;
+    height: 14em;
+}
+
+.cardText {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid blue;
+    width: 14em;
+}
+
+button {
+    color: white;
+    background-color: black;
+    border-radius: 1em;
+    padding: .5em;
+}

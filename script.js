@@ -1,12 +1,12 @@
 document.addEventListener("DOMContentLoaded", function() {
 // item list //
     let menuItems = [
-    {name: "Decaf Coffee", description: "A nice warm drink.", price: 2.99, offer: {discount: 20}},
-    {name: "Iced Coffee", description: "A nice cold drink.", price: 3.99, offer: {discount: 20}},
-    {name: "Latte",description: "A nice sweet drink.",price: 2.50, offer: {discount: 20}},
-    {name: "Cappucino Coffee", description: "A nice tasting drink.", price: 3.50, offer: {discount: 20}},
-    {name: "Americano Coffee", description: "A nice basic drink.", price: 2.25, offer: {discount: 20}},
-    {name: "Espresso Coffee", description: "A nice strong drink.", price: 3.75, offer: {discount: 20}}
+    {name: "Decaf", description: "A nice warm drink.", price: 2.99, offer: {discount: 20}, itemImages: 0},
+    {name: "Iced Coffee", description: "A nice cold drink.", price: 3.99, offer: {discount: 10}, itemImages: 0},
+    {name: "Latte",description: "A nice sweet drink.",price: 2.50, offer: {discount: 0}, itemImages: 0},
+    {name: "Cappuccino", description: "A nice tasting drink.", price: 3.50, offer: {discount: 5}, itemImages: 0},
+    {name: "Americano", description: "A nice basic drink.", price: 2.25, offer: {discount: 0}, itemImages: 0},
+    {name: "Espresso", description: "A nice strong drink.", price: 3.75, offer: {discount: 25}, itemImages: 0}
 ];
 
 // function to generate and display cards to html //
@@ -14,17 +14,35 @@ const products = document.querySelector("#menu");
 const menuItemsLength = menuItems.length;
 function displayMenuItems (menuItems) {
     for (let i = 0; i < menuItemsLength; i++){    
-        let code = `
-            <div class="card">
+        if (menuItems[i].offer.discount > 0) {
+          let discountedPrice = menuItems[i].price - (menuItems[i].price * menuItems[i].offer.discount / 100);
+          let code = `
+              <div class="card">
+                <div class="itemImages">${menuItems[i].itemImages}</div>  
                 <div class="cardText">
-                    <h2 class="itemName">${menuItems[i].name}</h2>
-                    <p class="description">${menuItems[i].description}</p>
-                    <p class="price">$${menuItems[i].price}</p>
-                    <p class="offer">${menuItems[i].offer.discount}% off</p>
-                    <button class="add-to-cart" data-id="${i}">Add to cart</button>
-                </div>
-            </div>`
-        products.innerHTML += code;
+                      <h2 class="itemName">${menuItems[i].name}</h2>
+                      <p class="description">${menuItems[i].description}</p>
+                      <p class="price, line-through">$${menuItems[i].price.toFixed(2)}</p>
+                      <p class="discountedPrice">${discountedPrice.toFixed(2)}</p>
+                      <p class="offer">${menuItems[i].offer.discount.toFixed(2)}% off</p>
+                      <button class="add-to-cart" data-id="${i}">Add to cart</button>
+                  </div>
+              </div>`
+          products.innerHTML += code;
+        } else if (menuItems[i].offer.discount <= 0) {
+          let code = `
+              <div class="card">
+                <div class="itemImages">${menuItems[i].itemImages}</div>  
+                <div class="cardText">
+                      <h2 class="itemName">${menuItems[i].name}</h2>
+                      <p class="description">${menuItems[i].description}</p>
+                      <p class="price">$${menuItems[i].price.toFixed(2)}</p>
+                      <button class="add-to-cart" data-id="${i}">Add to cart</button>
+                  </div>
+              </div>`
+          products.innerHTML += code;
+        }
+
     }
 }
 displayMenuItems(menuItems);
@@ -56,13 +74,13 @@ function displayCartItems() {
     const itemPrice = item.price * item.quantity;
     const itemDiscount = item.offer.discount / 100;
     subTotalAmount += itemPrice;
-    totalDiscount += itemPrice - itemDiscount;
+    totalDiscount += itemPrice * itemDiscount;
 
     code += `
       <div class="cartItem">
         <h2 class="itemName">${item.name}</h2>
         <p class="quantity">${item.quantity}</p>
-        <p class="price">$${item.price}</p>
+        <p class="price">$${item.price.toFixed(2)}</p>
         <button class="remove-from-cart, remove-one-from-cart" data-id="${i}">Remove from cart</button>
       </div>
     `;
@@ -70,7 +88,7 @@ function displayCartItems() {
 
   let discountAmount = 0;
   if (totalDiscount > 0) {
-    discountAmount = subTotalAmount - totalDiscount;
+    discountAmount = totalDiscount;
   }
   
   const totalAmount = subTotalAmount - discountAmount;
@@ -102,7 +120,7 @@ function displayCartItems() {
 }
 
 
-    
+// add button events here //   
 products.addEventListener("click", function(event) {
   if (event.target.classList.contains("add-to-cart")) {
     const id = parseInt(event.target.dataset.id);
